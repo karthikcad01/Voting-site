@@ -1,21 +1,24 @@
-const Express = require("express")
-const setupMiddleware = require('./setup/middleware')
-const setupDatabase = require('./setup/database')
+const Config = require('./config')
+const Express = require('express')
+const setupRedis = require('./setup/redis')
 const setupRouter = require('./setup/router')
+const setupDatabase = require('./setup/database')
+const setupMiddleware = require('./setup/middleware')
 
 const app = Express()
 
 setupMiddleware(app)
 
-setupDatabase()
-.then((client) => {
+async function start() {
+    const db = await setupDatabase()
+    const redisDb = await setupRedis()
 
-    setupRouter(app,client)
+    setupRouter(app, db, redisDb)
 
-
-    app.listen(4000, () => {
-        console.log('Server started at port 4000');
+    app.listen(Config.port, () => {
+        console.log('Server started on port', Config.port)
     })
-})
-.catch(console.error)
+}
 
+
+start().catch(console.error)

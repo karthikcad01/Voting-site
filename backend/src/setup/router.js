@@ -1,12 +1,19 @@
 const Router = require('express').Router
-
-const createPolls = require('../handlers/create-poll')
+const getPoll = require('../handlers/get-poll')
+const createPolls = require('../handlers/create-polls')
+const createVotes = require('../handlers/create-votes')
 
 const createPollsValidator = require('../validators/create-polls')
+const createVotesValidator = require('../validators/create-votes')
 
-module.exports = (app, client) => {
+module.exports = (app, db, redisDb) => {
     const router = new Router()
-    router.post('/polls',createPollsValidator,createPolls(client))
-    app.use(router)
 
+    router.post('/polls', createPollsValidator, createPolls(db))
+
+    router.put('/polls/:poll', createVotesValidator, createVotes(db, redisDb))
+
+    router.get('/polls/:poll', getPoll(db))
+
+    app.use(router)
 }

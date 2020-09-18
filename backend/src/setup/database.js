@@ -1,10 +1,12 @@
 const Mongodb = require('mongodb')
+const Config = require('../config')
 
-const uri = 'mongodb://localhost/voting-platform'
-
-module.exports = () => {
-    const client = new Mongodb.MongoClient(uri,{
+module.exports = async () => {
+    const client = new Mongodb.MongoClient(Config.databaseUri, {
         useUnifiedTopology: true
     })
-    return client.connect()
+
+    await client.connect()
+
+    return client.db()
 }
