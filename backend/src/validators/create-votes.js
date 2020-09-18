@@ -3,9 +3,8 @@ const { validateAll } = require('indicative/validator')
 module.exports = async (request, response, next) => {
     try {
         await validateAll(request.body, {
-            title: 'required',
-            choices: 'required|array|min:2',
-            'choices.*': 'required|string'
+            choice: 'required',
+            ip: 'required|ipv4'
         })
 
         return next()
